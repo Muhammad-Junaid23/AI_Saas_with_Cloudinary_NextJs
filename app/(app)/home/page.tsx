@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import VideoCard from '@/components/VideoCard';
 import type { Video } from '@/types';
-import { VideoIcon, ImageIcon, Star, Eye, Grid3X3, List, Upload, Play } from 'lucide-react';
+import { VideoIcon, ImageIcon, Star, Eye, Grid3X3, List, Upload, Play, Search } from 'lucide-react';
 
 function Home() {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -59,140 +59,146 @@ function Home() {
   }
 
   return (
-    <div>
-      {/* Content Header */}
-      <div className='flex items-center justify-between mb-8'>
-        <div>
-          <h2 className='text-3xl font-bold text-white mb-2'>Media Library</h2>
-          <p className='text-gray-400'>Manage and showcase your media content</p>
+    <div className='space-y-6 md:space-y-8'>
+      <div className='space-y-4 md:space-y-0 md:flex md:items-center md:justify-between'>
+        <div className='text-center md:text-left'>
+          <h2 className='text-2xl md:text-3xl font-bold text-white mb-2'>Media Library</h2>
+          <p className='text-gray-400 text-sm md:text-base'>Manage and showcase your media content</p>
         </div>
 
-        <div className='flex items-center gap-4'>
-          {/* Tab Switcher */}
-          <div className='tabs tabs-boxed bg-white/10 backdrop-blur-sm'>
+        <div className='md:hidden'>
+          <div className='flex items-center gap-2 bg-white/10 rounded-full px-4 py-2'>
+            <Search className='w-4 h-4 text-gray-400' />
+            <input
+              type='text'
+              placeholder='Search media...'
+              className='bg-transparent text-white placeholder-gray-400 outline-none text-sm flex-1'
+            />
+          </div>
+        </div>
+
+        <div className='flex flex-col space-y-3 md:space-y-0 md:flex-row md:items-center md:gap-4'>
+          <div className='tabs tabs-boxed bg-white/10 backdrop-blur-sm w-full md:w-auto'>
             <a
-              className={`tab ${
+              className={`tab flex-1 md:flex-none ${
                 activeTab === 'videos' ? 'tab-active bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-300'
               }`}
               onClick={() => setActiveTab('videos')}
             >
-              <VideoIcon className='w-4 h-4 mr-2' />
-              Videos
+              <VideoIcon className='w-4 h-4 mr-1 md:mr-2' />
+              <span className='text-xs md:text-sm'>Videos</span>
             </a>
             <a
-              className={`tab ${
+              className={`tab flex-1 md:flex-none ${
                 activeTab === 'images' ? 'tab-active bg-gradient-to-r from-blue-500 to-purple-600 text-white' : 'text-gray-300'
               }`}
               onClick={() => setActiveTab('images')}
             >
-              <ImageIcon className='w-4 h-4 mr-2' />
-              Images
+              <ImageIcon className='w-4 h-4 mr-1 md:mr-2' />
+              <span className='text-xs md:text-sm'>Images</span>
             </a>
           </div>
 
-          {/* View Mode Toggle */}
-          <div className='join'>
+          <div className='hidden sm:flex join w-full md:w-auto'>
             <button
-              className={`btn join-item btn-sm ${viewMode === 'grid' ? 'btn-primary' : 'btn-outline'}`}
+              className={`btn join-item btn-sm flex-1 md:flex-none ${viewMode === 'grid' ? 'btn-primary' : 'btn-outline'}`}
               onClick={() => setViewMode('grid')}
             >
               <Grid3X3 className='w-4 h-4' />
+              <span className='ml-1 md:hidden'>Grid</span>
             </button>
             <button
-              className={`btn join-item btn-sm ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
+              className={`btn join-item btn-sm flex-1 md:flex-none ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
               onClick={() => setViewMode('list')}
             >
               <List className='w-4 h-4' />
+              <span className='ml-1 md:hidden'>List</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mb-8'>
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6'>
         <div className='stats shadow-xl bg-gradient-to-r from-blue-500/20 to-purple-600/20 backdrop-blur-sm border border-white/10'>
-          <div className='stat'>
+          <div className='stat p-3 md:p-4'>
             <div className='stat-figure text-blue-400'>
-              <VideoIcon className='w-8 h-8' />
+              <VideoIcon className='w-6 h-6 md:w-8 md:h-8' />
             </div>
-            <div className='stat-title text-gray-300'>Total Videos</div>
-            <div className='stat-value text-white'>{videos.length}</div>
-            <div className='stat-desc text-gray-400'>{videos.length === 0 ? 'No videos uploaded' : 'Videos available'}</div>
+            <div className='stat-title text-gray-300 text-xs md:text-sm'>Total Videos</div>
+            <div className='stat-value text-white text-lg md:text-2xl'>{videos.length}</div>
+            <div className='stat-desc text-gray-400 text-xs'>{videos.length === 0 ? 'No videos' : 'Available'}</div>
           </div>
         </div>
 
         <div className='stats shadow-xl bg-gradient-to-r from-green-500/20 to-emerald-600/20 backdrop-blur-sm border border-white/10'>
-          <div className='stat'>
+          <div className='stat p-3 md:p-4'>
             <div className='stat-figure text-green-400'>
-              <ImageIcon className='w-8 h-8' />
+              <ImageIcon className='w-6 h-6 md:w-8 md:h-8' />
             </div>
-            <div className='stat-title text-gray-300'>Total Images</div>
-            <div className='stat-value text-white'>0</div>
-            <div className='stat-desc text-gray-400'>No images uploaded</div>
+            <div className='stat-title text-gray-300 text-xs md:text-sm'>Total Images</div>
+            <div className='stat-value text-white text-lg md:text-2xl'>6</div>
+            <div className='stat-desc text-gray-400 text-xs'>No images</div>
           </div>
         </div>
 
         <div className='stats shadow-xl bg-gradient-to-r from-purple-500/20 to-pink-600/20 backdrop-blur-sm border border-white/10'>
-          <div className='stat'>
+          <div className='stat p-3 md:p-4'>
             <div className='stat-figure text-purple-400'>
-              <Eye className='w-8 h-8' />
+              <Eye className='w-6 h-6 md:w-8 md:h-8' />
             </div>
-            <div className='stat-title text-gray-300'>Total Views</div>
-            <div className='stat-value text-white'>0</div>
-            <div className='stat-desc text-gray-400'>No views yet</div>
+            <div className='stat-title text-gray-300 text-xs md:text-sm'>Total Views</div>
+            <div className='stat-value text-white text-lg md:text-2xl'>54</div>
+            <div className='stat-desc text-gray-400 text-xs'>No views yet</div>
           </div>
         </div>
 
         <div className='stats shadow-xl bg-gradient-to-r from-orange-500/20 to-red-600/20 backdrop-blur-sm border border-white/10'>
-          <div className='stat'>
+          <div className='stat p-3 md:p-4'>
             <div className='stat-figure text-orange-400'>
-              <Star className='w-8 h-8' />
+              <Star className='w-6 h-6 md:w-8 md:h-8' />
             </div>
-            <div className='stat-title text-gray-300'>Favorites</div>
-            <div className='stat-value text-white'>0</div>
-            <div className='stat-desc text-gray-400'>No favorites yet</div>
+            <div className='stat-title text-gray-300 text-xs md:text-sm'>Favorites</div>
+            <div className='stat-value text-white text-lg md:text-2xl'>3</div>
+            <div className='stat-desc text-gray-400 text-xs'>No favorites</div>
           </div>
         </div>
       </div>
 
-      {/* Content Area */}
       {videos.length === 0 ? (
-        /* Enhanced Empty State */
         <div className='card bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 shadow-2xl'>
-          <div className='card-body items-center text-center py-16'>
+          <div className='card-body items-center text-center py-8 md:py-16 px-4 md:px-8'>
             <div className='mb-6'>
-              <div className='w-24 h-24 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-full flex items-center justify-center mb-4 mx-auto'>
-                <VideoIcon className='w-12 h-12 text-blue-400' />
+              <div className='w-16 h-16 md:w-24 md:h-24 bg-gradient-to-r from-blue-500/20 to-purple-600/20 rounded-full flex items-center justify-center mb-4 mx-auto'>
+                <VideoIcon className='w-8 h-8 md:w-12 md:h-12 text-blue-400' />
               </div>
-              <h3 className='text-2xl font-bold text-white mb-2'>No videos available</h3>
-              <p className='text-gray-400 max-w-md'>
+              <h3 className='text-xl md:text-2xl font-bold text-white mb-2'>No videos available</h3>
+              <p className='text-gray-400 text-sm md:text-base max-w-md mx-auto'>
                 Get started by uploading your first video. Drag and drop files or click the upload button to begin.
               </p>
             </div>
 
-            <div className='flex flex-col sm:flex-row gap-4'>
-              <button className='btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 border-none'>
-                <Upload className='w-5 h-5' />
-                Upload Video
+            <div className='flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto'>
+              <button className='btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 border-none flex-1 sm:flex-none'>
+                <Upload className='w-4 h-4 md:w-5 md:h-5' />
+                <span className='text-sm md:text-base'>Upload Video</span>
               </button>
-              <button className='btn btn-outline text-gray-300 border-gray-600 hover:bg-white/10'>
-                <Play className='w-5 h-5' />
-                View Tutorial
+              <button className='btn btn-outline text-gray-300 border-gray-600 hover:bg-white/10 flex-1 sm:flex-none'>
+                <Play className='w-4 h-4 md:w-5 md:h-5' />
+                <span className='text-sm md:text-base'>View Tutorial</span>
               </button>
             </div>
 
-            <div className='mt-8 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20'>
-              <p className='text-blue-300 text-sm'>
+            <div className='mt-6 md:mt-8 p-3 md:p-4 bg-blue-500/10 rounded-xl border border-blue-500/20'>
+              <p className='text-blue-300 text-xs md:text-sm'>
                 💡 <strong>Pro Tip:</strong> You can also upload media by dragging files directly onto this page!
               </p>
             </div>
           </div>
         </div>
       ) : (
-        /* Video Grid */
         <div className='card bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-white/10 shadow-2xl'>
-          <div className='card-body'>
-            <div className={`grid gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+          <div className='card-body p-4 md:p-6'>
+            <div className={`grid gap-4 md:gap-6 ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
               {videos.map((video) => (
                 <VideoCard key={video.id} video={video} onDownload={handleDownload} />
               ))}
