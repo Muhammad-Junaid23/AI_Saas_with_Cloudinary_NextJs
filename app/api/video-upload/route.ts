@@ -77,4 +77,4 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export const runtime = 'nodejs'; //  This forces Vercel to use Node.js Serverless Functions
+export const runtime = 'nodejs'; //  This forces Vercel to use Node.js Serverless Functions as it is using Edge Functions by default and gives build error.
