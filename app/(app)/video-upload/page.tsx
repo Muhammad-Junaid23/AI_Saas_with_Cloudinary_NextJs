@@ -82,7 +82,30 @@ function VideoUpload() {
       });
 
       if (response.status === 200) {
+        // Clear any cached video data
+        try {
+          // Force refresh the videos API cache
+          await axios.get(`/api/videos?t=${Date.now()}`, {
+            headers: {
+              'Cache-Control': 'no-cache',
+              Pragma: 'no-cache',
+            },
+          });
+        } catch (error) {
+          console.log('Cache refresh failed, but upload succeeded');
+        }
+
+        // Add a timestamp to force page refresh
+        router.push(`/home?refresh=${Date.now()}`);
+
+        // Alternative: Use router.refresh() to refresh the current route
+        router.refresh();
         router.push('/home');
+
+        // Reset form
+        setFile(null);
+        setTitle('');
+        setDescription('');
       }
     } catch (error) {
       console.log(error);
