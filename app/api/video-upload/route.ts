@@ -76,3 +76,5 @@ export async function POST(request: NextRequest) {
     await prisma.$disconnect();
   }
 }
+
+export const runtime = 'nodejs'; //  This forces Vercel to use Node.js Serverless Functions
