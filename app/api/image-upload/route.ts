@@ -52,3 +52,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Upload image failed' }, { status: 500 });
   }
 }
+
+export const runtime = 'nodejs'; //  This forces Vercel to use Node.js Serverless Functions as it is using Edge Functions by default and gives build error.
