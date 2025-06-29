@@ -219,7 +219,6 @@ export default function SocialShare() {
                             <p className='text-xs md:text-sm text-gray-400 mb-1'>
                               {config.width} × {config.height} ({config.aspectRatio})
                             </p>
-                            <p className='text-xs text-gray-500'>{config.description}</p>
                           </div>
                           {selectedFormat === format && <div className='w-3 h-3 bg-white rounded-full flex-shrink-0'></div>}
                         </div>
@@ -253,18 +252,7 @@ export default function SocialShare() {
 
                 <div className='bg-white/5 rounded-xl p-4 md:p-6'>
                   <div className='flex justify-center items-center min-h-[200px]'>
-                    <div
-                      className='relative bg-gray-900/50 rounded-lg overflow-hidden shadow-2xl border-2 border-white/20'
-                      style={{
-                        width: `${Math.min(currentFormat.previewWidth, window.innerWidth < 768 ? 280 : currentFormat.previewWidth)}px`,
-                        height: `${Math.min(
-                          currentFormat.previewHeight,
-                          window.innerWidth < 768
-                            ? (280 * currentFormat.previewHeight) / currentFormat.previewWidth
-                            : currentFormat.previewHeight
-                        )}px`,
-                      }}
-                    >
+                    <div className='relative bg-gray-900/50 rounded-lg overflow-hidden shadow-2xl border-2 border-white/20'>
                       <CldImage
                         width={currentFormat.width}
                         height={currentFormat.height}
