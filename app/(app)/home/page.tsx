@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import VideoCard from '@/components/VideoCard';
 import type { Video } from '@/types';
-import { VideoIcon, ImageIcon, Star, Eye, Grid3X3, List, Upload, Play, Search } from 'lucide-react';
+import { VideoIcon, ImageIcon, Star, Eye, Grid3X3, List, Upload, Play, Search, RefreshCw } from 'lucide-react';
 
 function Home() {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -11,12 +11,24 @@ function Home() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState('videos');
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchVideos = useCallback(async () => {
+  const fetchVideos = useCallback(async (showRefreshing = false) => {
     try {
-      const response = await axios.get('/api/videos');
+      if (showRefreshing) setRefreshing(true);
+
+      // Add cache-busting timestamp
+      const timestamp = new Date().getTime();
+      const response = await axios.get(`/api/videos?t=${timestamp}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
+      });
+
       if (Array.isArray(response.data)) {
         setVideos(response.data);
+        setError(null);
       } else {
         throw new Error('Unexpected response format');
       }
@@ -25,12 +37,36 @@ function Home() {
       setError('Failed to fetch videos');
     } finally {
       setLoading(false);
+      if (showRefreshing) setRefreshing(false);
     }
   }, []);
 
   useEffect(() => {
     fetchVideos();
+
+    // Optional: Set up periodic refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchVideos();
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, [fetchVideos]);
+
+  // Add visibility change listener to refresh when user comes back to tab
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchVideos();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [fetchVideos]);
+
+  const handleRefresh = () => {
+    fetchVideos(true);
+  };
 
   const handleDownload = useCallback((url: string, title: string) => {
     const link = document.createElement('a');
@@ -54,6 +90,9 @@ function Home() {
     return (
       <div className='alert alert-error'>
         <span>{error}</span>
+        <button onClick={() => fetchVideos()} className='btn btn-sm btn-outline'>
+          Retry
+        </button>
       </div>
     );
   }
@@ -62,7 +101,17 @@ function Home() {
     <div className='space-y-6 md:space-y-8'>
       <div className='space-y-4 md:space-y-0 md:flex md:items-center md:justify-between'>
         <div className='text-center md:text-left'>
-          <h2 className='text-2xl md:text-3xl font-bold text-white mb-2'>Media Library</h2>
+          <div className='flex items-center gap-2 justify-center md:justify-start'>
+            <h2 className='text-2xl md:text-3xl font-bold text-white mb-2'>Media Library</h2>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className='btn btn-ghost btn-sm text-gray-400 hover:text-white'
+              title='Refresh videos'
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
           <p className='text-gray-400 text-sm md:text-base'>Manage and showcase your media content</p>
         </div>
 

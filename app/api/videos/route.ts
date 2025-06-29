@@ -8,7 +8,13 @@ export async function GET(request: NextRequest) {
     const videos = await prisma.video.findMany({
       orderBy: { createdAt: 'desc' },
     });
-    return NextResponse.json(videos);
+    return NextResponse.json(videos, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'CDN-Cache-Control': 'no-store',
+        'Vercel-CDN-Cache-Control': 'no-store',
+      },
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Error fetching videos' }, { status: 500 });
   } finally {
