@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import VideoCard from '@/components/VideoCard';
-import type { Video } from '@/types';
 import { VideoIcon, ImageIcon, Star, Eye, Grid3X3, List, Upload, Play, Search } from 'lucide-react';
+import type { Video } from '@/types';
 
 function Home() {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -11,6 +12,7 @@ function Home() {
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [activeTab, setActiveTab] = useState('videos');
+  const router = useRouter();
 
   const fetchVideos = useCallback(async () => {
     try {
@@ -137,7 +139,7 @@ function Home() {
             </div>
             <div className='stat-title text-gray-300 text-xs md:text-sm'>Total Images</div>
             <div className='stat-value text-white text-lg md:text-2xl'>6</div>
-            <div className='stat-desc text-gray-400 text-xs'>No images</div>
+            <div className='stat-desc text-gray-400 text-xs'>Available</div>
           </div>
         </div>
 
@@ -148,7 +150,7 @@ function Home() {
             </div>
             <div className='stat-title text-gray-300 text-xs md:text-sm'>Total Views</div>
             <div className='stat-value text-white text-lg md:text-2xl'>54</div>
-            <div className='stat-desc text-gray-400 text-xs'>No views yet</div>
+            <div className='stat-desc text-gray-400 text-xs'>Available</div>
           </div>
         </div>
 
@@ -159,7 +161,7 @@ function Home() {
             </div>
             <div className='stat-title text-gray-300 text-xs md:text-sm'>Favorites</div>
             <div className='stat-value text-white text-lg md:text-2xl'>3</div>
-            <div className='stat-desc text-gray-400 text-xs'>No favorites</div>
+            <div className='stat-desc text-gray-400 text-xs'>Available</div>
           </div>
         </div>
       </div>
@@ -180,11 +182,9 @@ function Home() {
             <div className='flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto'>
               <button className='btn btn-primary bg-gradient-to-r from-blue-500 to-purple-600 border-none flex-1 sm:flex-none'>
                 <Upload className='w-4 h-4 md:w-5 md:h-5' />
-                <span className='text-sm md:text-base'>Upload Video</span>
-              </button>
-              <button className='btn btn-outline text-gray-300 border-gray-600 hover:bg-white/10 flex-1 sm:flex-none'>
-                <Play className='w-4 h-4 md:w-5 md:h-5' />
-                <span className='text-sm md:text-base'>View Tutorial</span>
+                <span className='text-sm md:text-base' onClick={() => router.push('/video-upload')}>
+                  Upload Video
+                </span>
               </button>
             </div>
 
